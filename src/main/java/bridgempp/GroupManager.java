@@ -34,7 +34,7 @@ public class GroupManager {
     //Find Group, finds the First Group with name IGNORES CASE!
     public static Group findGroup(String name) {
         for (int i = 0; i < groups.size(); i++) {
-        	String groupname = groups.get(i).getName();
+            String groupname = groups.get(i).getName();
             if (groupname != null && groupname.equalsIgnoreCase(name)) {
                 return groups.get(i);
             }
@@ -42,18 +42,18 @@ public class GroupManager {
         return null;
     }
 
-    public static void sendMessageToAllSubscribedGroups(String message, Endpoint endpoint) {
+    public static void sendMessageToAllSubscribedGroups(Message message) {
         for (int i = 0; i < groups.size(); i++) {
-            if (groups.get(i).hasEndpoint(endpoint)) {
+            if (groups.get(i).hasEndpoint(message.getSender())) {
                 groups.get(i).sendMessage(message);
             }
         }
     }
 
-    public static void sendMessageToAllSubscribedGroupsWithoutLoopback(String message, Endpoint endpoint) {
+    public static void sendMessageToAllSubscribedGroupsWithoutLoopback(Message message) {
         for (int i = 0; i < groups.size(); i++) {
-            if (groups.get(i).hasEndpoint(endpoint)) {
-                groups.get(i).sendMessageWithoutLoopback(message, endpoint);
+            if (groups.get(i).hasEndpoint(message.getSender())) {
+                groups.get(i).sendMessageWithoutLoopback(message);
             }
         }
     }
@@ -103,5 +103,11 @@ public class GroupManager {
             listGroups += "Group: " + groups.get(i).getName() + "\n" + groups.get(i).toString();
         }
         return listGroups;
+    }
+
+    static void removeEndpointFromAllGroups(Endpoint endpoint) {
+        for (int i = 0; i < groups.size(); i++) {
+            groups.get(i).removeEndpoint(endpoint);
+        }
     }
 }
